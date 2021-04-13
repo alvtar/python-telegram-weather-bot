@@ -2,3 +2,70 @@ from pyowm import OWM
 from pyowm.utils import config
 import telebot
 #from pyowm.utils import timestamps
+
+# ---------- FREE API KEY examples ---------------------
+
+from pyowm.utils.config import get_default_config
+config_dict = get_default_config()
+config_dict['language'] = 'ru'
+
+owm = OWM(OWM_KEY , config_dict) # my
+bot = telebot.TeleBot(TG_KEY) # You can set parse_mode by default. HTML or MARKDOWN
+
+@bot.message_handler(commands=['start', 'help'])
+def send_welcome(message):
+	bot.reply_to(message, "Приветствую! \nНаберите нужный город:")
+
+
+@bot.message_handler(content_types=['text'])
+
+def send_echo(message):
+
+	mgr = owm.weather_manager()
+
+	try:
+		observation = mgr.weather_at_place(message.text)
+		w = observation.weather
+
+		# Search for current weather and get details
+		temp = w.temperature('celsius')["temp"]
+		wind = w.wind()["speed"]
+
+		answer  = "В городе " + message.text + " сейчас " + w.detailed_status +"\n" 
+		answer += "Температура около " + str (temp) + " градусов Цельсия" +"\n"
+		answer += "Влажность " + str (w.humidity) + " %" +"\n"
+		answer += "Ветер " + str (wind) + " м/с " +"\n\n"
+
+		if temp < 10:
+			answer+="Сейчас ппц как холодно, одевайся как танк!!!"
+		elif temp < 20:
+			answer+="Сейчас холодно, одевайся потеплее!"
+		elif temp > 20:
+			answer+="Температура норм, одевай, что угодно."
+
+	except Exception:
+		#print("CITY ERROR!!!")
+		answer  = "Город не найден!!!"
+
+
+	bot.send_message(message.chat.id, answer)
+# w.detailed_status         # 'clouds'
+# w.wind()                  # {'speed': 4.6, 'deg': 330}
+# w.humidity                # 87
+# w.temperature('celsius')  # {'temp_max': 10.5, 'temp': 9.7, 'temp_min': 9.0}
+# w.rain                    # {}
+# w.heat_index              # None
+# w.clouds                  # 75
+
+# # Will it be clear tomorrow at this time in Milan (Italy) ?
+# forecast = mgr.forecast_at_place('Milan,IT', 'daily')
+# answer = forecast.will_be_clear_at(timestamps.tomorrow())
+
+		
+
+#except Exception:
+    #bot.send_message(message.chat.id, "Город bkbСтрана не найдены!")
+
+#finally:
+bot.polling( none_stop = True)
+
