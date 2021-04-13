@@ -16,7 +16,6 @@ bot = telebot.TeleBot(TG_KEY) # You can set parse_mode by default. HTML or MARKD
 def send_welcome(message):
 	bot.reply_to(message, "Приветствую! \nНаберите нужный город:")
 
-
 @bot.message_handler(content_types=['text'])
 
 def send_echo(message):
@@ -46,9 +45,12 @@ def send_echo(message):
 	except Exception:
 		#print("CITY ERROR!!!")
 		answer  = "Город не найден!!!"
-
-
+		
 	bot.send_message(message.chat.id, answer)
+
+bot.polling( none_stop = True)
+
+
 # w.detailed_status         # 'clouds'
 # w.wind()                  # {'speed': 4.6, 'deg': 330}
 # w.humidity                # 87
@@ -61,11 +63,4 @@ def send_echo(message):
 # forecast = mgr.forecast_at_place('Milan,IT', 'daily')
 # answer = forecast.will_be_clear_at(timestamps.tomorrow())
 
-		
-
-#except Exception:
-    #bot.send_message(message.chat.id, "Город bkbСтрана не найдены!")
-
-#finally:
-bot.polling( none_stop = True)
 
