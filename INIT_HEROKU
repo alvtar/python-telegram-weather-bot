@@ -1,6 +1,6 @@
 pip3 freeze > requirements.txt  	# Generate requirements.txt
 heroku buildpacks:set heroku/python
-git add .; git commit -m "add requirements.txt"; git push heroku master	
+git add . ; git commit -m "add requirements.txt"; git push heroku master	
 
 
 # ====================================================
